@@ -19,6 +19,8 @@ export type ApiMode = "mock" | "real";
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 const RESOLVED_MODE: ApiMode =
   process.env.NEXT_PUBLIC_API_MODE === "real" ? "real" : "mock";
+const ODDS_MODE: ApiMode =
+  process.env.NEXT_PUBLIC_LIVE_ODDS === "real" ? "real" : RESOLVED_MODE;
 
 type RequestOptions = Omit<RequestInit, "headers"> & {
   headers?: Record<string, string>;
@@ -765,7 +767,7 @@ export type CreateTargetTrackerPayload = Omit<
 };
 
 export const fetchSportsbooks = async () => {
-  if (RESOLVED_MODE === "real") {
+  if (ODDS_MODE === "real") {
     return apiFetch<Sportsbook[]>("/sportsbooks");
   }
   startMockTimers();
@@ -774,7 +776,7 @@ export const fetchSportsbooks = async () => {
 };
 
 export const fetchEvents = async () => {
-  if (RESOLVED_MODE === "real") {
+  if (ODDS_MODE === "real") {
     return apiFetch<Event[]>("/events");
   }
   startMockTimers();
@@ -783,7 +785,7 @@ export const fetchEvents = async () => {
 };
 
 export const fetchEvent = async (id: string) => {
-  if (RESOLVED_MODE === "real") {
+  if (ODDS_MODE === "real") {
     return apiFetch<Event>(`/events/${id}`);
   }
   startMockTimers();
@@ -796,7 +798,7 @@ export const fetchEvent = async (id: string) => {
 };
 
 export const fetchOddsSnapshots = async (eventId?: string) => {
-  if (RESOLVED_MODE === "real") {
+  if (ODDS_MODE === "real") {
     const query = eventId ? `?eventId=${encodeURIComponent(eventId)}` : "";
     return apiFetch<OddsSnapshot[]>(`/odds${query}`);
   }
@@ -986,7 +988,7 @@ export const fetchCLV = async () => {
 };
 
 export const fetchConsensusLines = async (eventId?: string) => {
-  if (RESOLVED_MODE === "real") {
+  if (ODDS_MODE === "real") {
     const query = eventId ? `?eventId=${encodeURIComponent(eventId)}` : "";
     return apiFetch<ConsensusLine[]>(`/consensus${query}`);
   }
@@ -1000,10 +1002,12 @@ export const fetchConsensusLines = async (eventId?: string) => {
 };
 
 export const fetchSports = async () => {
-  if (RESOLVED_MODE === "real") {
+  if (ODDS_MODE === "real") {
     return apiFetch<Sport[]>("/sports");
   }
   startMockTimers();
   await mockDelay();
   return ["NFL", "NBA", "NCAAB", "NCAAF"];
 };
+
+export const getOddsMode = (): ApiMode => ODDS_MODE;

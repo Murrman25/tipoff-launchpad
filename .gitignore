@@ -6,5 +6,6 @@ coverage/
 .turbo/
 .vercel/
 .env
+.env.local
 .env.*.local
 *.log

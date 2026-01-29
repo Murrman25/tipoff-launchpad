@@ -3,32 +3,50 @@
 import { useEffect, useMemo, useState } from "react";
 import DemoBanner from "@/components/DemoBanner";
 import EventCard from "@/src/components/EventCard";
+import {
+  fetchEvents,
+  fetchOddsSnapshots,
+  getOddsMode
+} from "@/src/lib/api";
 import { listEvents } from "@/src/lib/demo/demoApi";
 import {
   startRealtimeSim,
   subscribe,
   unsubscribe
 } from "@/src/lib/demo/realtimeSim";
-import type { DemoEvent } from "@/src/lib/contracts";
+import type {
+  DemoEvent,
+  DemoLiveOdds,
+  Event,
+  MarketType,
+  OddsSnapshot
+} from "@/src/lib/contracts";
 
 const sports = ["All", "NFL", "NBA", "NCAAB", "NCAAF"] as const;
 
 type SportFilter = (typeof sports)[number];
 
 export default function DashboardPage() {
-  const [events, setEvents] = useState<DemoEvent[]>([]);
+  const [demoEvents, setDemoEvents] = useState<DemoEvent[]>([]);
+  const [liveEvents, setLiveEvents] = useState<Event[]>([]);
+  const [snapshots, setSnapshots] = useState<OddsSnapshot[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sportFilter, setSportFilter] = useState<SportFilter>("All");
   const [liveOnly, setLiveOnly] = useState(false);
   const [showLiveLines, setShowLiveLines] = useState(true);
+  const oddsMode = getOddsMode();
+  const isLiveOdds = oddsMode === "real";
 
   useEffect(() => {
+    if (isLiveOdds) {
+      return;
+    }
     const loadData = async () => {
       try {
         setLoading(true);
         const data = await listEvents();
-        setEvents(data);
+        setDemoEvents(data);
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unable to load demo events.");
@@ -37,12 +55,15 @@ export default function DashboardPage() {
       }
     };
     loadData();
-  }, []);
+  }, [isLiveOdds]);
 
   useEffect(() => {
+    if (isLiveOdds) {
+      return;
+    }
     startRealtimeSim();
     const handleUpdate = (payload: { eventId: string; event: DemoEvent }) => {
-      setEvents((prev) =>
+      setDemoEvents((prev) =>
         prev.map((event) => (event.id === payload.eventId ? payload.event : event))
       );
     };
@@ -54,7 +75,110 @@ export default function DashboardPage() {
       unsubscribe("score:update", handleUpdate);
       unsubscribe("odds:update", handleUpdate);
     };
-  }, []);
+  }, [isLiveOdds]);
+
+  useEffect(() => {
+    if (!isLiveOdds) {
+      return;
+    }
+    let active = true;
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const [eventsData, oddsData] = await Promise.all([
+          fetchEvents(),
+          fetchOddsSnapshots()
+        ]);
+        if (!active) {
+          return;
+        }
+        setLiveEvents(eventsData);
+        setSnapshots(oddsData);
+      } catch (err) {
+        if (!active) {
+          return;
+        }
+        setError(err instanceof Error ? err.message : "Unable to load live events.");
+        setLiveEvents([]);
+        setSnapshots([]);
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    };
+    loadData();
+    const interval = setInterval(loadData, 5 * 60 * 1000);
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
+  }, [isLiveOdds]);
+
+  const events = isLiveOdds ? liveEvents : demoEvents;
+
+  const latestByEventMarket = useMemo(() => {
+    if (!isLiveOdds) {
+      return {} as Record<string, Partial<Record<MarketType, OddsSnapshot>>>;
+    }
+    return snapshots.reduce<Record<string, Partial<Record<MarketType, OddsSnapshot>>>>(
+      (acc, snapshot) => {
+        if (!acc[snapshot.eventId]) {
+          acc[snapshot.eventId] = {};
+        }
+        const existing = acc[snapshot.eventId][snapshot.market];
+        if (
+          !existing ||
+          new Date(snapshot.timestamp).getTime() >
+            new Date(existing.timestamp).getTime()
+        ) {
+          acc[snapshot.eventId][snapshot.market] = snapshot;
+        }
+        return acc;
+      },
+      {}
+    );
+  }, [isLiveOdds, snapshots]);
+
+  const buildLiveOdds = (eventId: string): DemoLiveOdds | undefined => {
+    const byMarket = latestByEventMarket[eventId];
+    const spread = byMarket?.spread;
+    const moneyline = byMarket?.moneyline;
+    if (!spread || !moneyline) {
+      return undefined;
+    }
+    const spreadBook = spread.sportsbookId ?? "consensus";
+    const moneyBook = moneyline.sportsbookId ?? "consensus";
+    return {
+      spread: {
+        away: {
+          line: -spread.line,
+          price: spread.awayOdds,
+          bookKey: spreadBook,
+          updatedAt: spread.timestamp
+        },
+        home: {
+          line: spread.line,
+          price: spread.homeOdds,
+          bookKey: spreadBook,
+          updatedAt: spread.timestamp
+        }
+      },
+      moneyline: {
+        away: {
+          price: moneyline.awayOdds,
+          bookKey: moneyBook,
+          updatedAt: moneyline.timestamp
+        },
+        home: {
+          price: moneyline.homeOdds,
+          bookKey: moneyBook,
+          updatedAt: moneyline.timestamp
+        }
+      }
+    };
+  };
 
   const visibleEvents = useMemo(() => {
     return events
@@ -82,7 +206,9 @@ export default function DashboardPage() {
       </section>
 
       <section className="panel">
-        <DemoBanner message="Demo mode is active. Live scores and odds are simulated." />
+        {!isLiveOdds ? (
+          <DemoBanner message="Demo mode is active. Live scores and odds are simulated." />
+        ) : null}
         <div className="panel-header">
           <h3 className="panel-title">Filters</h3>
           <span className="meta">Adjust what appears in the live board.</span>
@@ -132,14 +258,21 @@ export default function DashboardPage() {
 
       <section className="list">
         {loading ? (
-          <div className="notice">Loading demo events...</div>
+          <div className="notice">
+            {isLiveOdds ? "Loading live events..." : "Loading demo events..."}
+          </div>
         ) : error ? (
           <div className="notice error">{error}</div>
         ) : visibleEvents.length === 0 ? (
           <div className="notice">No events match the current filters.</div>
         ) : (
           visibleEvents.map((event) => (
-            <EventCard key={event.id} event={event} showLiveLines={showLiveLines} />
+            <EventCard
+              key={event.id}
+              event={event}
+              showLiveLines={showLiveLines}
+              liveOdds={isLiveOdds ? buildLiveOdds(event.id) : undefined}
+            />
           ))
         )}
       </section>

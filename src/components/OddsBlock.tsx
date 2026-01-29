@@ -1,6 +1,6 @@
 "use client";
 
-import type { DemoBookKey, DemoLinePrice, DemoPrice } from "@/src/lib/contracts";
+import type { DemoLinePrice, DemoPrice } from "@/src/lib/contracts";
 
 type OddsSide = DemoLinePrice | DemoPrice;
 
@@ -13,9 +13,15 @@ type OddsBlockProps = {
   home: OddsSide;
 };
 
-const bookLabels: Record<DemoBookKey, string> = {
+const bookLabels: Record<string, string> = {
   draftkings: "DK",
   fanduel: "FD",
+  betmgm: "MGM",
+  caesars: "CZR",
+  pointsbetus: "PB",
+  betrivers: "BR",
+  barstool: "BS",
+  williamhill_us: "WH",
   circa: "CIR",
   pinnacle: "PIN"
 };

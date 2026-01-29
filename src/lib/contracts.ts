@@ -223,7 +223,7 @@ export type CLV = {
   calculatedAt: string;
 };
 
-export type DemoBookKey = "draftkings" | "fanduel" | "circa" | "pinnacle";
+export type DemoBookKey = string;
 
 export type DemoLinePrice = {
   line: number;

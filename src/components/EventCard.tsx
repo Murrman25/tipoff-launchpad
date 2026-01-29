@@ -2,24 +2,34 @@
 
 import StatusBadge from "@/components/StatusBadge";
 import { formatLocalTime } from "@/lib/format";
-import type { DemoEvent } from "@/src/lib/contracts";
+import type { DemoEvent, DemoLiveOdds, Event } from "@/src/lib/contracts";
 import OddsBlock from "@/src/components/OddsBlock";
 
+type EventCardEvent = DemoEvent | Event;
+
 type EventCardProps = {
-  event: DemoEvent;
+  event: EventCardEvent;
   showLiveLines: boolean;
+  liveOdds?: DemoLiveOdds;
 };
 
-const buildScoreLine = (event: DemoEvent) => {
-  if (!event.isLive || !event.inPlayState?.score) {
+const buildScoreLine = (event: EventCardEvent) => {
+  const demoScore = "inPlayState" in event ? event.inPlayState?.score : undefined;
+  const liveScore = "score" in event ? event.score : undefined;
+  const score = demoScore ?? liveScore;
+  if (!event.isLive || !score) {
     return null;
   }
-  const { away, home } = event.inPlayState.score;
+  const { away, home } = score;
   return `${event.awayTeam} ${away} - ${event.homeTeam} ${home}`;
 };
 
-export default function EventCard({ event, showLiveLines }: EventCardProps) {
+export default function EventCard({ event, showLiveLines, liveOdds }: EventCardProps) {
   const scoreLine = buildScoreLine(event);
+  const odds =
+    liveOdds ?? ("liveOdds" in event ? (event as DemoEvent).liveOdds : undefined);
+  const updatedAt =
+    "lastUpdated" in event && event.lastUpdated ? event.lastUpdated : event.startTime;
 
   return (
     <div className="event-card">
@@ -39,31 +49,33 @@ export default function EventCard({ event, showLiveLines }: EventCardProps) {
         />
         {scoreLine ? <div className="event-score">{scoreLine}</div> : null}
       </div>
-      {showLiveLines ? (
+      {showLiveLines && odds ? (
         <>
           <OddsBlock
             label="Live spread"
             market="spread"
             awayLabel={event.awayTeam}
             homeLabel={event.homeTeam}
-            away={event.liveOdds.spread.away}
-            home={event.liveOdds.spread.home}
+            away={odds.spread.away}
+            home={odds.spread.home}
           />
           <OddsBlock
             label="Live moneyline"
             market="moneyline"
             awayLabel={event.awayTeam}
             homeLabel={event.homeTeam}
-            away={event.liveOdds.moneyline.away}
-            home={event.liveOdds.moneyline.home}
+            away={odds.moneyline.away}
+            home={odds.moneyline.home}
           />
         </>
+      ) : showLiveLines ? (
+        <div className="odds-hidden">Live lines unavailable</div>
       ) : (
         <div className="odds-hidden">Live lines hidden</div>
       )}
       <div className="event-updated">
         <div className="label">Updated</div>
-        <div className="meta">{formatLocalTime(event.lastUpdated)}</div>
+        <div className="meta">{formatLocalTime(updatedAt)}</div>
       </div>
     </div>
   );
