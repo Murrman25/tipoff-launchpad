@@ -15,7 +15,7 @@ export default function Home() {
           Monitor games and markets in real time. Define your conditions. Get notified the moment they happen.
         </p>
         <div className="hero-actions">
-          <Link className="btn btn-primary" href="/dashboard">
+          <Link className="btn btn-accent" href="/dashboard">
             Start free
           </Link>
           <Link className="btn btn-ghost" href="/pricing">
@@ -54,7 +54,7 @@ export default function Home() {
         <div className="bento-grid">
           {/* Live Board - Large Card */}
           <SpotlightCard
-            className="bento-card"
+            className="bento-card bento-card-featured"
             style={{
               gridColumn: "span 8",
               borderRadius: 20,
@@ -106,12 +106,12 @@ export default function Home() {
 
           {/* Quick Alerts */}
           <SpotlightCard
-            className="bento-card"
+            className="bento-card bento-card-featured"
             style={{
               gridColumn: "span 4",
               borderRadius: 18,
               border: "1px solid rgba(255, 255, 255, 0.08)",
-              background: "linear-gradient(160deg, rgba(94, 106, 210, 0.18), rgba(255, 255, 255, 0.03))",
+              background: "linear-gradient(160deg, rgba(249, 115, 22, 0.12), rgba(255, 255, 255, 0.03))",
               boxShadow: "0 0 0 1px rgba(255, 255, 255, 0.06), 0 18px 50px rgba(0, 0, 0, 0.4)",
               padding: 20
             }}
@@ -128,11 +128,11 @@ export default function Home() {
                   fontSize: 32,
                   fontWeight: 700,
                   fontFamily: "var(--font-mono)",
-                  color: "var(--accent)",
+                  color: "var(--accent-orange)",
                   padding: "16px 32px",
                   borderRadius: 12,
-                  background: "rgba(94, 106, 210, 0.2)",
-                  border: "2px solid var(--accent)"
+                  background: "rgba(249, 115, 22, 0.15)",
+                  border: "2px solid var(--accent-orange)"
                 }}>+100</div>
               </div>
               <div className="bento-chip-row" style={{ justifyContent: "center" }}>
