@@ -1,7 +1,7 @@
 "use client";
 
-import type { PlanId } from "@/lib/pricing";
-import { planLabels } from "@/lib/pricing";
+import type { PlanId } from "../lib/pricing";
+import { planLabels } from "../lib/pricing";
 
 type PlanBadgeProps = {
   plan: PlanId;

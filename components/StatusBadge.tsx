@@ -1,5 +1,5 @@
-import { buildStatusLabel, statusTone } from "@/lib/status";
-import type { InPlayState } from "@/lib/types";
+import { buildStatusLabel, statusTone } from "../lib/status";
+import type { InPlayState } from "../lib/types";
 
 type StatusBadgeProps = {
   isLive: boolean;
