@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev:next": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:dev": "vite build --mode development",
+    "dev": "vite",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@vitejs/plugin-react-swc": "^3.11.0",
