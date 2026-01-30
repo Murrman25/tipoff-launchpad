@@ -194,7 +194,7 @@ export default function DashboardPage() {
     <>
       <section className="page-header">
         <div>
-          <h2 className="page-title">Dashboard</h2>
+          <h2 className="page-title">Games</h2>
           <p className="page-subtitle">
             Live scores, spreads, and moneylines across every tracked sport.
           </p>
