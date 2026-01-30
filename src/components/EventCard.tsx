@@ -14,7 +14,8 @@ type EventCardProps = {
 };
 
 const buildScoreLine = (event: EventCardEvent) => {
-  const demoScore = "inPlayState" in event ? event.inPlayState?.score : undefined;
+  const inPlay = event.inPlayState as { score?: { away: number; home: number } } | undefined;
+  const demoScore = inPlay?.score;
   const liveScore = "score" in event ? event.score : undefined;
   const score = demoScore ?? liveScore;
   if (!event.isLive || !score) {
