@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "../adapters/Link";
 import { useMemo, useState } from "react";
 import type { Event, MarketType, OddsSnapshot } from "@/src/lib/contracts";
 import { formatLocalTime } from "@/lib/format";

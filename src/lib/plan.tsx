@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "../adapters/Link";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 export const planTiers = ["FREE", "PRO", "ELITE"] as const;
