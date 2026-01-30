@@ -203,7 +203,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: 12px 0;
 }
 
 .top-bar-inner {
@@ -211,15 +211,18 @@ main {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
-  border-radius: 0;
-  border: none;
-  background: rgba(5, 5, 6, 0.7);
-  backdrop-filter: blur(12px);
-  box-shadow: none;
-  position: relative;
-  overflow: visible;
+  gap: 24px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(5, 5, 6, 0.85);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.top-bar-inner.compact {
+  padding: 10px 20px;
+  gap: 20px;
 }
 
 .brand-logo {
@@ -230,18 +233,147 @@ main {
 
 .brand-logo-image {
   width: auto;
-  height: 40px;
+  height: 32px;
+}
+
+/* Navigation Links */
+.nav-links {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-links.compact {
+  gap: 4px;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  color: var(--subtle);
+  transition: all 0.2s ease;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  color: var(--text);
+  background: var(--surface-hover);
+}
+
+.nav-link.active {
+  color: var(--text);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Dropdown Navigation */
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-dropdown-chevron {
+  transition: transform 0.2s ease;
+}
+
+.nav-dropdown-chevron.open {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 160px;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #0a0a0c;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  z-index: 100;
+  animation: dropdownFadeIn 0.15s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.nav-dropdown-item {
+  display: block;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: var(--subtle);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.nav-dropdown-item:hover {
+  color: var(--text);
+  background: var(--surface-hover);
+}
+
+.nav-dropdown-item.active {
+  color: var(--accent);
+  background: rgba(94, 106, 210, 0.12);
+}
+
+/* Nav Actions */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-actions.compact {
+  gap: 10px;
 }
 
 .nav-signin {
   color: var(--subtle);
   font-size: 13px;
+  font-weight: 500;
   transition: color 0.2s ease;
 }
 
 .nav-signin:hover {
   color: var(--text);
 }
+
+.nav-cta {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+}
+
+.nav-cta.compact {
+  padding: 7px 14px;
+}
+
 
 /* ============================================
    ATTIO-INSPIRED LANDING PAGE STYLES
