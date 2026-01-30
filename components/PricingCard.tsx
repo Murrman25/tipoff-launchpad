@@ -1,7 +1,7 @@
 "use client";
 
-import type { BillingInterval, PlanId, PlanTier } from "../lib/pricing";
-import { planLabels } from "../lib/pricing";
+import type { BillingInterval, PlanId, PlanTier } from "@/lib/pricing";
+import { planLabels } from "@/lib/pricing";
 
 type PricingCardProps = {
   tier: PlanTier;

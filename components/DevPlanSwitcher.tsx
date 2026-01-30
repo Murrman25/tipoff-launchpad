@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import { planOrder, type PlanId } from "../lib/pricing";
-import { usePlan } from "../lib/plan";
+import { planOrder, type PlanId } from "@/lib/pricing";
+import { usePlan } from "@/lib/plan";
 
 export default function DevPlanSwitcher() {
   const { currentPlan, setCurrentPlan } = usePlan();
