@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { planOrder, type PlanId } from "@/lib/pricing";
+import { planOrder, type PlanId } from "./pricing";
 
 type PlanContextValue = {
   currentPlan: PlanId;
