@@ -19,7 +19,7 @@ const jetBrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "TipOff",
-  description: "Real-time sports line and game-state alerts, fully customizable."
+  description: "Real-time sports line and game-state alerts, fully customizable"
 };
 
 export default function RootLayout({
