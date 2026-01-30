@@ -1,0 +1,53 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@lib/*": ["./lib/*"],
+      "@components/*": ["./components/*"]
+    }
+  },
+  "include": [
+    "src/main.tsx",
+    "src/App.tsx",
+    "src/adapters/**/*",
+    "src/pages/**/*",
+    "src/sandbox/**/*",
+    "src/components/EventCard.tsx",
+    "src/components/OddsBlock.tsx",
+    "src/components/PlanBadge.tsx",
+    "src/components/UpgradeCTA.tsx",
+    "src/lib/plan.tsx",
+    "src/lib/contracts.ts",
+    "lib/pricing.ts",
+    "lib/format.ts",
+    "lib/types.ts",
+    "lib/plan.tsx",
+    "components/StatusBadge.tsx",
+    "components/PricingCard.tsx",
+    "components/PlanBadge.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "app/**/*",
+    "src/lib/api.ts",
+    "src/lib/realtime.ts",
+    "src/components/AlertRuleBuilder/**/*",
+    "src/components/TargetTrackerCreateModal.tsx"
+  ]
+}

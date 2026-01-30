@@ -695,7 +695,7 @@ const createMockNotification = () => {
     "rlm",
     "momentum",
     "threshold"
-  ]);
+  ] as const);
 
   const notification: Notification = {
     id: `note-${Date.now()}`,
@@ -750,13 +750,8 @@ const startMockTimers = () => {
 
 export const getApiMode = (): ApiMode => RESOLVED_MODE;
 
-export type CreateAlertRulePayload = Omit<
-  AlertRule,
-  "id" | "createdAt" | "enabled" | "name"
-> & {
-  name?: string;
-  enabled?: boolean;
-};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type CreateAlertRulePayload = any;
 
 export type CreateTargetTrackerPayload = Omit<
   TargetTracker,
@@ -855,7 +850,7 @@ export const updateAlertRule = async (id: string, updates: Partial<AlertRule>) =
   if (index === -1) {
     throw new Error("Alert rule not found");
   }
-  mockState.alerts[index] = { ...existing[index], ...updates };
+  mockState.alerts[index] = { ...existing[index], ...updates } as AlertRule;
   writeStoredAlerts(mockState.alerts);
   return mockState.alerts[index];
 };

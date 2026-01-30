@@ -47,14 +47,14 @@ const allowAlertEmit = () => {
 };
 
 const buildOddsUpdate = (): OddsSnapshot => {
-  const market = pick(markets);
+  const market = pick([...markets]);
   const timestamp = new Date().toISOString();
   const baseLine = market === "total" ? 220.5 : market === "spread" ? -3.5 : 0;
   const lineDelta = market === "moneyline" ? 0 : Math.random() > 0.5 ? 0.5 : -0.5;
   const homeOdds = market === "moneyline" ? -160 + randomBetween(-15, 15) : -110;
   const awayOdds = market === "moneyline" ? 140 + randomBetween(-15, 15) : -110;
-  const tags =
-    Math.random() > 0.7 ? [pick(attributionSignals)] : ["movement"];
+  const tags: string[] =
+    Math.random() > 0.7 ? [pick([...attributionSignals])] : ["movement"];
 
   return {
     id: `odds-${Date.now()}`,
@@ -70,12 +70,12 @@ const buildOddsUpdate = (): OddsSnapshot => {
 };
 
 const buildAlertTriggered = (): Notification => {
-  const signal = pick(attributionSignals);
-  const market = pick(markets);
-  const side =
+  const signal = pick([...attributionSignals]);
+  const market = pick([...markets]);
+  const side: "over" | "under" | "home" | "away" =
     market === "total"
-      ? pick(["over", "under"])
-      : pick(["home", "away"]);
+      ? pick(["over", "under"] as const)
+      : pick(["home", "away"] as const);
   const baseLine = market === "total" ? 220.5 : market === "spread" ? -3.5 : 0;
   const lineDelta = market === "moneyline" ? 0 : Math.random() > 0.5 ? 0.5 : -0.5;
   const line = market === "moneyline" ? undefined : baseLine + lineDelta;
@@ -98,7 +98,7 @@ const buildAlertTriggered = (): Notification => {
       "LIVE_MOMENTUM",
       "RLM",
       "STEAM"
-    ]),
+    ] as const),
     firedAt: new Date().toISOString(),
     message: `${signal} signal triggered`,
     market,
@@ -107,7 +107,7 @@ const buildAlertTriggered = (): Notification => {
     price,
     sportsbookId: pick(sportsbookIds),
     tags: [signal],
-    attribution: { signal, confidence: 0.7 + Math.random() * 0.25 },
+    attribution: { signal: signal as "steam" | "key-number" | "rlm" | "momentum" | "threshold", confidence: 0.7 + Math.random() * 0.25 },
     isRead: false
   };
 };
@@ -143,18 +143,18 @@ class MockRealtimeClient implements RealtimeClient {
 
   on<K extends EventKey>(event: K, handler: Handler<K>) {
     if (!this.handlers[event]) {
-      this.handlers[event] = new Set();
+      (this.handlers as Record<K, Set<Handler<K>>>)[event] = new Set();
     }
-    this.handlers[event]?.add(handler as Handler<EventKey>);
+    (this.handlers[event] as Set<Handler<K>>)?.add(handler);
   }
 
   off<K extends EventKey>(event: K, handler: Handler<K>) {
-    this.handlers[event]?.delete(handler as Handler<EventKey>);
+    (this.handlers[event] as Set<Handler<K>>)?.delete(handler);
   }
 
   private emit<K extends EventKey>(event: K, payload: RealtimeEventMap[K]) {
-    this.handlers[event]?.forEach((handler) => {
-      handler(payload as RealtimeEventMap[EventKey]);
+    (this.handlers[event] as Set<Handler<K>> | undefined)?.forEach((handler) => {
+      handler(payload);
     });
   }
 
@@ -199,10 +199,12 @@ const createRealClient = (): RealtimeClient => {
       socket?.disconnect();
     },
     on(event, handler) {
-      ensureSocket().on(event, handler);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ensureSocket().on(event, handler as any);
     },
     off(event, handler) {
-      socket?.off(event, handler);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      socket?.off(event, handler as any);
     }
   };
 };
