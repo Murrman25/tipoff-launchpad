@@ -15,6 +15,10 @@ export default defineConfig(({ mode }) => ({
       "@components": path.resolve(__dirname, "./components"),
     },
   },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom'],
+    exclude: ['lovable-tagger'],
+  },
   server: {
     host: "::",
     port: 8080,

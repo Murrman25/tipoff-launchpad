@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "../adapters/Link";
 import { useState } from "react";
 import FeatureLock from "@/components/FeatureLock";
 import TargetTrackerCreateModal from "@/src/components/TargetTrackerCreateModal";
