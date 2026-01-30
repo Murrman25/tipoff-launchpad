@@ -1,10 +1,18 @@
 "use client";
-import { planOrder, type PlanId } from "@/lib/pricing";
-import { usePlan } from "@/lib/plan";
+import { useState, useEffect } from "react";
+import { planOrder, type PlanId } from "../lib/pricing";
+import { usePlan } from "../lib/plan";
 
 export default function DevPlanSwitcher() {
   const { currentPlan, setCurrentPlan } = usePlan();
-  if (process.env.NODE_ENV !== "development") {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Only render after hydration and in development
+  if (!mounted || process.env.NODE_ENV !== "development") {
     return null;
   }
 
