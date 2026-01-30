@@ -1,205 +1,275 @@
 
 
-# Component Preview Environment Setup Plan
+# Home Page UI Redesign Plan
 
-## Overview
+## Design Philosophy (Inspired by Attio)
 
-This plan creates a temporary Vite scaffold within the project so you can iterate on UI components using Lovable's live preview, then sync finished components back to your Next.js repository. The scaffold will be removable when you're done.
+Based on thorough analysis of attio.com, the redesign will embrace these key design principles:
 
-## What You'll Get
+### Attio Design Patterns Identified:
+1. **Clean, Modern Typography** - Large, confident headlines with tight letter-spacing; serifless sans-serif fonts
+2. **Numbered Section Markers** - `[01]`, `[02]`, `[03]` prefixes for major sections creating visual rhythm
+3. **Interactive Product Previews** - Live UI mockups embedded within bento boxes showing actual product functionality
+4. **Tabbed Feature Showcases** - Horizontal tabs (Data, Workflows, Reporting, Pipeline) that switch content
+5. **Trust Signals** - Logo walls, customer testimonials, and social proof avatars
+6. **Subtle Gradients & Glows** - Light backgrounds with soft shadows, not harsh contrasts
+7. **Generous Whitespace** - Sections breathe with ample padding
+8. **Dual CTAs** - Primary "Start for free" + secondary "Talk to sales" pattern
+9. **Compact Stats Row** - Key metrics displayed in a single horizontal bar
 
-- A working live preview environment that matches your existing TipOff design system
-- The ability to test and refine individual components (EventCard, HeatMap, PricingCard, etc.)
-- A component gallery page to view and interact with all components
-- Easy copy-paste workflow back to your Next.js repo
+---
+
+## Implementation Overview
+
+### 1. Updated Navigation Bar
+
+**Current State:**
+- Logo is oversized (260px height)
+- Links: Home, Games, Alerts, Notifications, Settings, Pricing
+- CTA: "Start free"
+
+**New Design:**
+- Reduce logo height to approximately 40px for a cleaner, more modern look
+- Simplify navigation to match the README's core navigation:
+  - **Games** (dashboard)
+  - **Alerts**
+  - **Notifications**
+  - **Settings**
+  - **Pricing**
+- Remove "Home" as the logo serves this purpose
+- Keep "Start free" CTA but add a subtle "Sign in" link
+
+---
+
+### 2. Hero Section Redesign
+
+**New Structure:**
+```text
++-----------------------------------------------------------+
+|  [Kicker badge]  "Real-time sports intelligence"          |
+|                                                           |
+|     Line & game-state alerts,                             |
+|     precision-tuned.                                      |
+|                                                           |
+|  [Subtitle - 1 line explaining the value proposition]     |
+|                                                           |
+|  [Start free] [View pricing]                              |
+|                                                           |
+|  +-- Stats Bar: Latency | Sports | Markets --------------+|
++-----------------------------------------------------------+
+```
+
+**Changes:**
+- Centered hero text (following Attio's centered hero approach)
+- Shorter, punchier headline
+- Single-line subtitle
+- Stats bar beneath CTAs as trust signals
+- Remove the hero card (alert summary) from hero - move to bento section
+
+---
+
+### 3. Interactive Bento Grid (Feature Previews)
+
+This is the core of the redesign. Each bento box will contain **inline CSS-styled mini UI mockups** that give users a "sneak peek" of the actual product.
+
+**Bento Layout (12-column grid):**
+
+```text
+Row 1:
++------------------------ [01] Live Board (8 cols) ------------------------+-------- Quick Alerts (4 cols) --------+
+| Inline mockup: 3-4 event rows with team names, scores, live badges,       | One-click +100 alert mockup          |
+| spread/ML values                                                          | Home/Away pills, countdown            |
++---------------------------------------------------------------------------+---------------------------------------+
+
+Row 2:
++-------- Alert Builder (5 cols) --------+-------------------- Notifications (4 cols) ---------------------+-- Plans (3 cols) --+
+| Multi-condition builder mockup with    | Real-time feed mockup showing triggered alerts with timestamps   | Tier comparison    |
+| conditions, logic selector, time       |                                                                   | Free/Pro/Elite     |
+| window dropdown                        |                                                                   |                    |
++----------------------------------------+-------------------------------------------------------------------+--------------------+
+
+Row 3:
++------------------ Steam & Movement Alerts (6 cols) ------------------+--------------- Key Number Alerts (6 cols) ---------------+
+| Inline mockup showing steam detection, RLM indicator, movement       | Football key numbers visualization (3, 7, 10, 14)        |
+| timeline visualization                                                | Proximity threshold UI                                   |
++----------------------------------------------------------------------+-----------------------------------------------------------+
+```
+
+**Bento Box Content Details:**
+
+| Box | Title | Inline CSS Mockup Content |
+|-----|-------|---------------------------|
+| Live Board | "Track every line movement" | Event rows: teams, LIVE badge with clock, ML odds, spread values. Styled table-like layout. |
+| Quick Alerts | "One-click +100 alerts" | Big +100 button, Home/Away toggle pills, Pregame/Live selector |
+| Alert Builder | "Stack conditions with logic" | Condition cards (line, score), AND/OR toggle, time window selector |
+| Notifications | "Real-time delivery" | Stacked notification cards with team names, alert type, timestamps |
+| Plans | "Transparent gating" | Three-column comparison: Free (1/day), Pro (15/day), Elite (unlimited) |
+| Steam & Movement | "Detect market signals" | Steam radar visualization, RLM indicator with arrow, sparkline |
+| Key Numbers | "Football precision" | Key number grid (3, 7, 10, 14), proximity threshold slider |
+
+---
+
+### 4. Section Numbering & Headers
+
+Following Attio's pattern of numbered sections:
+
+- `[01] Live Monitoring` - Games dashboard section
+- `[02] Alert System` - Alert builder and conditions
+- `[03] Real-time Delivery` - Notifications and speed
+- `[04] Plans & Pricing` - Plan comparison
+
+Each section header will use the format:
+```text
+[01] section-kicker
+// subheading descriptor
+
+Main headline with
+line breaks for impact.
+
+Supporting paragraph text.
+```
+
+---
+
+### 5. Trust & Speed Section
+
+**New Section: Performance & Compliance**
+
+```text
++-----------------------------------------------------------+
+|  [04] Built for speed                                     |
+|                                                           |
+|  +------+  +------+  +------+  +------+                   |
+|  | <5s  |  |  6   |  |  3   |  | 100% |                   |
+|  |Latency| |Sports | |Markets | |Uptime|                   |
+|  +------+  +------+  +------+  +------+                   |
+|                                                           |
+|  [ Compliance badges: No picks • No ROI claims • etc. ]   |
++-----------------------------------------------------------+
+```
+
+---
+
+### 6. Final CTA Section
+
+Simplified call-to-action:
+
+```text
++-----------------------------------------------------------+
+|  Start with Free. Upgrade when you need it.               |
+|                                                           |
+|  [Compare plans]  [Open live board]                       |
++-----------------------------------------------------------+
+```
 
 ---
 
 ## Technical Implementation
 
-### Phase 1: Create Core Vite Files
+### Files to Modify:
 
-**1.1 Create `index.html`** (required for Vite)
-```text
-Location: /index.html
-Purpose: Entry point for the Vite dev server
-Content: Standard HTML5 template with React root div, Inter + JetBrains Mono fonts
-```
+1. **`components/AppNav.tsx`**
+   - Reduce logo size from 260px to 40px
+   - Remove "Home" link (logo serves this purpose)
+   - Add "Sign in" text link before CTA
+   - Clean up nav styling for tighter spacing
 
-**1.2 Create `vite.config.ts`**
-```text
-Location: /vite.config.ts
-Purpose: Configure Vite build and path aliases
-Key configs:
-  - Path aliases: @/ -> src/, @lib/ -> lib/, @components/ -> components/
-  - React plugin for JSX support
-  - Port and preview settings
-```
+2. **`app/page.tsx`** (Complete rewrite)
+   - Implement centered hero with new copy
+   - Create numbered section structure
+   - Build bento grid with inline CSS mockups
+   - Add stats bar and trust signals
+   - Implement new CTA section
 
-**1.3 Update `package.json`** (manual step - you'll need to do this)
-```text
-Add these scripts:
-  "dev": "vite",
-  "build:dev": "vite build --mode development",
-  "preview": "vite preview"
+3. **`app/globals.css`** (Add new styles)
+   - Add `.hero-centered` class for centered hero
+   - Add `.section-number` for `[01]` markers
+   - Add `.bento-preview` for inline mockup containers
+   - Add `.stats-bar` for metrics display
+   - Add `.trust-badges` for compliance pills
 
-Add these dependencies:
-  "vite": "^5.4.0",
-  "@vitejs/plugin-react-swc": "^3.7.0",
-  "react-router-dom": "^6.26.0"
-```
+### New CSS Classes (to add to globals.css):
 
----
+```css
+/* Numbered section markers */
+.section-number { ... }
 
-### Phase 2: Create Vite Entry Point
+/* Centered hero variant */
+.hero-centered { ... }
 
-**2.1 Create `src/main.tsx`**
-```text
-Location: /src/main.tsx
-Purpose: React application entry point
-Content:
-  - Import globals.css (your full design system)
-  - Set up React Router for component gallery navigation
-  - Wrap with PlanProvider for plan state
-```
+/* Stats bar for metrics */
+.stats-bar { ... }
 
-**2.2 Create `src/App.tsx`**
-```text
-Location: /src/App.tsx
-Purpose: Root layout matching your Next.js layout
-Content:
-  - Ambient blobs background effect
-  - Top navigation bar (simplified for sandbox)
-  - Router outlet for pages
-  - Toast provider wrapper
+/* Bento preview containers */
+.bento-preview { ... }
+.bento-event-row { ... }
+.bento-condition-card { ... }
+.bento-notification-item { ... }
+
+/* Trust badges */
+.trust-badges { ... }
 ```
 
 ---
 
-### Phase 3: Component Adapters
+## Content Updates (from README)
 
-Since your Next.js components use `"use client"`, `next/link`, and `next/image`, I'll create thin adapter layers:
+### Navigation Links:
+- Games (dashboard)
+- Alerts
+- Notifications
+- Settings
+- Pricing
 
-**3.1 Create `src/adapters/Link.tsx`**
-```text
-Wraps react-router-dom's Link to match next/link API
-Used by: HeatMap, UpgradeCTA, FeatureLock, AppNav
-```
+### Hero Copy:
+- **Kicker:** "TipOff - alerts-first sports intelligence"
+- **Headline:** "Line & game-state alerts, precision-tuned."
+- **Subtitle:** "Monitor games and markets in real time. Define your conditions. Get notified the moment they happen."
 
-**3.2 Create `src/adapters/Image.tsx`**
-```text
-Simple <img> wrapper matching next/image props subset
-Used by: AppNav (logo)
-```
+### Stats Bar:
+- Live latency: <5s
+- Sports: NFL, NBA, MLB, NHL, NCAAB, NCAAF
+- Markets: ML, Spread, Total
 
-**3.3 Copy and adapt key shared modules:**
-- `lib/format.ts` - date/time formatting (no changes needed)
-- `lib/status.ts` - status label helpers (no changes needed)
-- `lib/types.ts` - TypeScript types (no changes needed)
-- `lib/pricing.ts` - plan data (no changes needed)
-- `lib/plan.tsx` - remove "use client" directive
-- `src/lib/contracts.ts` - no changes needed
+### Bento Titles (from README features):
+- "Track live games and lines"
+- "Build precise alert conditions"
+- "Get notified instantly"
+- "Quick alerts from the Games board"
+- "Multi-condition logic with time windows"
+- "Steam detection and movement tracking"
 
----
-
-### Phase 4: Component Gallery
-
-**4.1 Create `src/pages/ComponentGallery.tsx`**
-```text
-Purpose: Interactive showcase of all components
-Sections:
-  1. EventCard - with mock demo event data
-  2. OddsBlock - spread and moneyline examples
-  3. StatusBadge - pregame, live, final states
-  4. PricingCard - all three tiers
-  5. HeatMap - with sample metrics data
-  6. FeatureLock/UpgradeCTA - locked state demos
-  7. Buttons - primary, ghost, danger variants
-  8. Form elements - inputs, selects, pills
-```
-
-**4.2 Create mock data helpers**
-```text
-Location: src/sandbox/mockData.ts
-Purpose: Generate sample events, odds, and snapshots for testing
-Uses existing patterns from src/lib/demo/demoData.ts
-```
+### Compliance Messaging:
+- "No picks or betting advice"
+- "No sportsbook affiliation"
+- "Informational monitoring only"
 
 ---
 
-### Phase 5: Component Migration Checklist
+## Visual Design Tokens
 
-For each component you want to work on, I'll:
+Using existing TipOff design tokens (from globals.css):
 
-| Next.js Component | Vite Adaptation |
-|-------------------|-----------------|
-| Remove `"use client"` | Not needed in Vite |
-| `next/link` imports | Change to `@/adapters/Link` |
-| `next/image` imports | Change to `@/adapters/Image` |
-| `@/` path aliases | Keep as-is (vite.config handles) |
-| `@/components/` | Keep as-is |
-| `@/lib/` | Keep as-is |
-| `@/src/` | Keep as-is |
-
----
-
-### Phase 6: Folder Structure
-
-```text
-/                           <- Project root
-├── index.html              <- NEW: Vite entry
-├── vite.config.ts          <- NEW: Vite config
-├── package.json            <- EDIT: Add scripts (manual)
-├── src/
-│   ├── main.tsx            <- NEW: React entry
-│   ├── App.tsx             <- NEW: Root layout
-│   ├── adapters/           <- NEW: Next.js shims
-│   │   ├── Link.tsx
-│   │   └── Image.tsx
-│   ├── pages/              <- NEW: Sandbox pages
-│   │   └── ComponentGallery.tsx
-│   ├── sandbox/            <- NEW: Mock data
-│   │   └── mockData.ts
-│   └── components/         <- EXISTING: Your components
-│       ├── EventCard.tsx   <- Will adapt
-│       ├── HeatMap.tsx     <- Will adapt
-│       └── ...
-├── lib/                    <- EXISTING: Shared logic
-├── components/             <- EXISTING: More components
-└── app/
-    └── globals.css         <- EXISTING: Full design system
-```
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--accent` | #5e6ad2 | Primary buttons, highlights |
+| `--bg-1` | #050506 | Page background |
+| `--surface` | rgba(255,255,255,0.05) | Cards, panels |
+| `--border` | rgba(255,255,255,0.06) | Subtle borders |
+| `--text` | #EDEDEF | Primary text |
+| `--muted` | #8a8f98 | Secondary text |
+| `--subtle` | rgba(255,255,255,0.6) | Tertiary text |
 
 ---
 
-## Workflow After Setup
+## Implementation Order
 
-1. **View components**: Open the preview to see the Component Gallery
-2. **Edit a component**: Make changes to any component file
-3. **See live updates**: Preview updates instantly
-4. **Copy back**: When satisfied, the component code works in both environments (just add back `"use client"` and swap Link/Image imports)
-
----
-
-## Cleanup (When Done)
-
-Delete these files/folders to return to pure Next.js:
-- `/index.html`
-- `/vite.config.ts`
-- `/src/main.tsx`
-- `/src/App.tsx`
-- `/src/adapters/`
-- `/src/pages/`
-- `/src/sandbox/`
-
-And remove the Vite scripts/dependencies from `package.json`.
-
----
-
-## Next Steps After Approval
-
-1. I'll create all the scaffold files listed above
-2. You'll need to manually update `package.json` with the required scripts and dependencies
-3. The Component Gallery will be immediately available in the preview
-4. You can tell me which specific component you want to work on first
+1. Update `AppNav.tsx` - logo size and link structure
+2. Add new CSS classes to `globals.css`
+3. Rewrite `app/page.tsx` with new structure:
+   - Centered hero section
+   - Numbered section headers
+   - Bento grid with inline mockups
+   - Stats and trust section
+   - Final CTA
 
