@@ -1,9 +1,9 @@
 ﻿"use client";
 
-import StatusBadge from "@/components/StatusBadge";
-import { formatLocalTime } from "@/lib/format";
-import type { DemoEvent, DemoLiveOdds, Event } from "@/src/lib/contracts";
-import OddsBlock from "@/src/components/OddsBlock";
+import StatusBadge from "./StatusBadge";
+import { formatLocalTime } from "../lib/format";
+import type { DemoEvent, DemoLiveOdds, Event } from "../lib/contracts";
+import OddsBlock from "./OddsBlock";
 
 type EventCardEvent = DemoEvent | Event;
 
