@@ -1,180 +1,116 @@
 
-
-# Visual Refinement Plan: Orange Accents & Reduced Transparency
+# Fix Hybrid Setup: Next.js + Vite Working Side by Side
 
 ## Overview
+Your project has a hybrid architecture with **Next.js** for production and **Vite** for component development. The current build is failing due to conflicting path aliases and Next.js-specific imports in files that Vite processes.
 
-This plan addresses the "washed out" appearance caused by excessive transparency and introduces a warm orange accent color to create visual hierarchy and make key elements pop.
+## Root Cause Analysis
 
----
+### Problem 1: Path Alias Conflicts
+The project has **two different path alias configurations** that conflict:
 
-## Design Changes
+| Alias | Next.js (`tsconfig.json`) | Vite (`vite.config.ts`) |
+|-------|---------------------------|-------------------------|
+| `@/*` | Maps to `./` (root) | Maps to `./src/` |
 
-### 1. New Orange Accent Color System
+When `components/DevPlanSwitcher.tsx` imports `@/lib/pricing`, Next.js resolves it to `./lib/pricing.ts` (correct), but the path configuration causes confusion during builds.
 
-Add a new orange accent to the design tokens for use on key interactive elements and highlights:
+### Problem 2: Next.js Imports in Shared Files
+Several files used by both environments import Next.js-specific modules that don't exist in Vite:
+- `src/lib/plan.tsx` → imports `next/link`
+- `src/components/QuickActions.tsx` → imports `next/link`
+- `src/components/HeatMap.tsx` → imports `next/link`
+- `src/components/SteamRadar.tsx` → imports `next/link`
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--accent-orange` | `#f97316` | Primary orange (Tailwind orange-500) |
-| `--accent-orange-bright` | `#fb923c` | Hover state |
-| `--accent-orange-glow` | `rgba(249, 115, 22, 0.25)` | Subtle glow effects |
-| `--border-orange` | `rgba(249, 115, 22, 0.4)` | Orange outline borders |
-
-### 2. Reduced Transparency - New Solid Surfaces
-
-Replace ultra-transparent surfaces with more opaque alternatives:
-
-| Current | New | Improvement |
-|---------|-----|-------------|
-| `--surface: rgba(255,255,255,0.05)` | `--surface: rgba(255,255,255,0.08)` | More visible |
-| `--surface-2: rgba(255,255,255,0.08)` | `--surface-solid: #0d0d10` | Solid dark surface |
-| `--border: rgba(255,255,255,0.06)` | `--border: rgba(255,255,255,0.10)` | More defined edges |
-
-### 3. Where Orange Will Be Applied (Sparingly)
-
-**Primary CTA Buttons:**
-- "Start free" button will get an orange gradient treatment
-- Creates immediate visual hierarchy
-
-**Bento Box Highlights:**
-- The "Live Board" and "Quick Alerts" bento boxes get a subtle orange top border (2px)
-- Key interactive elements within bento boxes use orange accents
-
-**Stats Bar Numbers:**
-- Latency (`<5s`) and performance stats use orange for emphasis
-
-**Active States:**
-- "LIVE" badges get an orange glow ring
-- Active pills and toggles use orange
-
-**Section Numbers:**
-- `[01]`, `[02]`, etc. markers use orange instead of purple
+### Problem 3: Missing Vite TypeScript Configuration
+The Vite build doesn't properly reference `tsconfig.vite.json`, causing path resolution issues.
 
 ---
 
-## Technical Implementation
+## Implementation Plan
 
-### Files to Modify
+### Step 1: Fix src/lib/plan.tsx to Use Adapter Pattern
+Replace `next/link` import with the existing adapter shim that works in both environments.
 
-#### 1. Fix Build Error: Create `src/lib/format.ts`
-Copy the format utilities from `lib/format.ts` to `src/lib/format.ts` so Vite can resolve the import.
+**File:** `src/lib/plan.tsx`
+- Change `import Link from "next/link"` to `import Link from "../adapters/Link"`
+- This uses the existing adapter at `src/adapters/Link.tsx` which wraps `react-router-dom` for Vite
 
-#### 2. Update `app/globals.css`
+### Step 2: Fix Other Components with Next.js Imports
+Apply the same adapter pattern to other affected files:
 
-**Add new CSS variables in `:root`:**
-```css
---accent-orange: #f97316;
---accent-orange-bright: #fb923c;
---accent-orange-glow: rgba(249, 115, 22, 0.25);
---border-orange: rgba(249, 115, 22, 0.4);
---surface-solid: #0d0d10;
-```
+**Files to update:**
+- `src/components/QuickActions.tsx` → use `../adapters/Link`
+- `src/components/HeatMap.tsx` → use `../adapters/Link`
+- `src/components/SteamRadar.tsx` → use `../adapters/Link`
 
-**Update existing variables for less transparency:**
-```css
---surface: rgba(255, 255, 255, 0.08);
---border: rgba(255, 255, 255, 0.10);
---border-hover: rgba(255, 255, 255, 0.16);
-```
+### Step 3: Update Vite Configuration for Proper ESM Handling
+Ensure the `lovable-tagger` is only loaded in development mode properly and add explicit ESM configuration.
 
-**New button variant:**
-```css
-.btn-accent {
-  background: linear-gradient(135deg, var(--accent-orange), #ea580c);
-  border: 1px solid var(--accent-orange);
-  color: #fff;
-  box-shadow: 0 0 20px var(--accent-orange-glow), 
-              inset 0 1px 0 rgba(255,255,255,0.2);
-}
-```
+**File:** `vite.config.ts`
+- Add `optimizeDeps.include` for `lovable-tagger` to prevent ESM issues
+- Ensure proper build configuration
 
-**Bento card with orange accent:**
-```css
-.bento-card-featured {
-  border-top: 2px solid var(--accent-orange);
-  box-shadow: 0 -4px 20px var(--accent-orange-glow), var(--shadow-card);
-}
-```
+### Step 4: Fix DevPlanSwitcher Import Paths for Next.js
+The `components/DevPlanSwitcher.tsx` (used by Next.js) uses `@/lib/pricing` and `@/lib/plan` which should resolve correctly in Next.js, but we should verify the imports are consistent.
 
-**Live badge with orange:**
-```css
-.badge-live {
-  background: rgba(249, 115, 22, 0.15);
-  color: var(--accent-orange);
-  border-color: var(--border-orange);
-  box-shadow: 0 0 12px var(--accent-orange-glow);
-}
-```
+**File:** `components/DevPlanSwitcher.tsx`
+- Keep using `@/lib/pricing` (resolves to `./lib/pricing.ts` in Next.js)
+- Keep using `@/lib/plan` (resolves to `./lib/plan.tsx` in Next.js)
 
-**Section number in orange:**
-```css
-.section-number {
-  color: var(--accent-orange);
-}
-```
+### Step 5: Update tsconfig.json for Clearer Path Resolution
+Ensure the paths are explicit and don't conflict.
 
-**Stats bar values in orange:**
-```css
-.stat-value {
-  color: var(--accent-orange);
-}
-```
-
-**Performance value in orange:**
-```css
-.performance-value {
-  color: var(--accent-orange);
-}
-```
-
-#### 3. Update `app/page.tsx`
-
-- Add `bento-card-featured` class to the Live Board and Quick Alerts bento boxes
-- Change "Start free" button from `btn-primary` to `btn-accent`
-- Keep secondary button as `btn-ghost` (no change)
+**File:** `tsconfig.json`
+- Add explicit path for `@lib/*` and `@components/*` to match Vite aliases
 
 ---
 
-## Visual Hierarchy Strategy
+## Technical Details
 
-**Orange = Action & Live Data**
-- Primary CTAs ("Start free")
-- Live/real-time indicators
-- Key metrics and stats
-- Active states
+### File Changes Summary
 
-**Purple = Brand & System**
-- Logo accent
-- Links and secondary interactions
-- Hover glows on cards (spotlight effect)
-- Inactive toggles
+| File | Change |
+|------|--------|
+| `src/lib/plan.tsx` | Replace `next/link` with adapter |
+| `src/components/QuickActions.tsx` | Replace `next/link` with adapter |
+| `src/components/HeatMap.tsx` | Replace `next/link` with adapter |
+| `src/components/SteamRadar.tsx` | Replace `next/link` with adapter |
+| `vite.config.ts` | Add ESM optimization for lovable-tagger |
+| `tsconfig.json` | Add `@lib/*` and `@components/*` paths |
 
-**Solid Surfaces = Structure**
-- Card backgrounds use slightly more opaque surfaces
-- Dropdown menus and overlays use solid backgrounds
-- Inner containers (bento-preview) use darker solid backgrounds
+### Architecture After Fix
 
----
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                     Hybrid Setup                            │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌─────────────────────┐      ┌─────────────────────────┐  │
+│  │     NEXT.JS         │      │        VITE             │  │
+│  │  (Production)       │      │  (Component Sandbox)    │  │
+│  │                     │      │                         │  │
+│  │  app/               │      │  src/                   │  │
+│  │  components/        │      │    pages/               │  │
+│  │  lib/               │      │    components/          │  │
+│  │                     │      │    adapters/            │  │
+│  │  Uses: next/link    │      │  Uses: adapters/Link    │  │
+│  │        next/image   │      │        adapters/Image   │  │
+│  └─────────────────────┘      └─────────────────────────┘  │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │              SHARED (lib/)                          │   │
+│  │  - pricing.ts    (plan tiers, features)             │   │
+│  │  - plan.tsx      (PlanProvider for Next.js)         │   │
+│  │  - types.ts      (shared TypeScript types)          │   │
+│  │  - format.ts     (formatting utilities)             │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
 
-## Before/After Comparison
-
-| Element | Before | After |
-|---------|--------|-------|
-| Primary CTA | Purple button | Orange gradient button with glow |
-| Live badges | Purple tint | Orange tint with subtle glow ring |
-| Bento cards | All same transparent | Featured cards have orange top border |
-| Section numbers | Purple `[01]` | Orange `[01]` |
-| Stats values | White text | Orange text |
-| Card surfaces | 5% white opacity | 8% white opacity (more visible) |
-| Borders | 6% white opacity | 10% white opacity (more defined) |
-
----
-
-## Implementation Order
-
-1. **Create `src/lib/format.ts`** - Fix build error first
-2. **Update CSS variables** - Add orange tokens and adjust transparency
-3. **Add new CSS classes** - `.btn-accent`, `.bento-card-featured`, updated badges
-4. **Update `app/page.tsx`** - Apply new classes to appropriate elements
-
+### Expected Outcome
+- **Vite dev server** (`npm run dev`) works for component development
+- **Next.js build** (`npm run build`) works for production
+- Both share the same styling (`app/globals.css`) and utility libraries
+- Path aliases resolve correctly in both environments
