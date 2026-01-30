@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import DevPlanSwitcher from "@/components/DevPlanSwitcher";
 
 const links = [
-  { href: "/", label: "Home" },
   { href: "/dashboard", label: "Games" },
   { href: "/alerts", label: "Alerts" },
   { href: "/notifications", label: "Notifications" },
@@ -24,15 +23,15 @@ export default function AppNav() {
           <Image
             src="/tipoffhq_logo.png"
             alt="TipOffHQ"
-            width={520}
-            height={130}
+            width={160}
+            height={40}
             priority
             className="brand-logo-image"
           />
         </Link>
         <nav className="nav-links">
           {links.map((link) => {
-            const isActive = pathname?.startsWith(link.href);
+            const isActive = pathname === link.href || (pathname?.startsWith(link.href) && link.href !== "/");
             return (
               <Link
                 key={link.href}
@@ -45,6 +44,9 @@ export default function AppNav() {
           })}
         </nav>
         <div className="nav-actions">
+          <Link className="nav-signin" href="/settings">
+            Sign in
+          </Link>
           <Link className="btn btn-primary nav-cta" href="/pricing">
             Start free
           </Link>

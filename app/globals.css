@@ -230,7 +230,409 @@ main {
 
 .brand-logo-image {
   width: auto;
-  height: 260px;
+  height: 40px;
+}
+
+.nav-signin {
+  color: var(--subtle);
+  font-size: 13px;
+  transition: color 0.2s ease;
+}
+
+.nav-signin:hover {
+  color: var(--text);
+}
+
+/* ============================================
+   ATTIO-INSPIRED LANDING PAGE STYLES
+   ============================================ */
+
+/* Section Number Markers */
+.section-number {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+/* Centered Hero */
+.hero-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 60px 24px 40px;
+}
+
+.hero-centered h1 {
+  font-size: 56px;
+  margin: 16px 0 20px;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.75) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-centered .hero-subtitle {
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Stats Bar */
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  padding: 24px 0;
+  margin-top: 32px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--muted);
+}
+
+/* Bento Preview Containers */
+.bento-preview {
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.bento-event-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 8px;
+}
+
+.bento-event-row:last-child {
+  margin-bottom: 0;
+}
+
+.bento-event-teams {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bento-event-team {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.bento-event-odds {
+  display: flex;
+  gap: 12px;
+}
+
+.bento-odds-cell {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(94, 106, 210, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(94, 106, 210, 0.25);
+}
+
+/* Condition Cards for Alert Builder */
+.bento-condition-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 8px;
+}
+
+.bento-condition-card:last-child {
+  margin-bottom: 0;
+}
+
+.bento-condition-type {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+}
+
+.bento-condition-value {
+  font-size: 13px;
+  color: var(--text);
+}
+
+/* Logic Toggle */
+.bento-logic-toggle {
+  display: inline-flex;
+  gap: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 12px 0;
+}
+
+.bento-logic-btn {
+  padding: 6px 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  cursor: pointer;
+}
+
+.bento-logic-btn.active {
+  background: var(--accent);
+  color: white;
+}
+
+/* Notification Items */
+.bento-notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 8px;
+}
+
+.bento-notification-item:last-child {
+  margin-bottom: 0;
+}
+
+.bento-notification-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.bento-notification-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bento-notification-title {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.bento-notification-meta {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Plan Comparison Mini */
+.bento-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.bento-plan-col {
+  text-align: center;
+  padding: 12px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.bento-plan-col.highlighted {
+  background: rgba(94, 106, 210, 0.15);
+  border-color: rgba(94, 106, 210, 0.3);
+}
+
+.bento-plan-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.bento-plan-limit {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Steam Radar Mini */
+.bento-steam-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(94, 106, 210, 0.12);
+  border: 1px solid rgba(94, 106, 210, 0.25);
+}
+
+.bento-steam-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bento-steam-arrow {
+  color: white;
+  font-size: 12px;
+}
+
+.bento-steam-text {
+  font-size: 12px;
+  color: var(--text);
+}
+
+/* Key Number Grid */
+.bento-keynumber-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.bento-keynumber {
+  text-align: center;
+  padding: 12px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Sparkline Mini */
+.bento-sparkline {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 32px;
+}
+
+.bento-spark-bar {
+  width: 6px;
+  background: linear-gradient(180deg, var(--accent), rgba(94, 106, 210, 0.4));
+  border-radius: 2px;
+}
+
+/* Trust Badges */
+.trust-badges {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.trust-badge-icon {
+  color: var(--accent);
+}
+
+/* Performance Stats Section */
+.performance-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.performance-stat {
+  text-align: center;
+  padding: 20px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+}
+
+.performance-value {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.performance-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+
+/* Section with centered content */
+.section-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.section-centered h2 {
+  font-size: 32px;
+  margin: 8px 0 16px;
+  letter-spacing: -0.02em;
+}
+
+.section-centered .meta {
+  max-width: 500px;
 }
 
 
